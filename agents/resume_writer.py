@@ -13,7 +13,7 @@ api = os.getenv("ANTHROPIC_API_KEY")
 def write(job_analysis: dict, resume: dict,feedback: str = None) ->dict: # type: ignore
     client = anthropic.Anthropic(api_key=api)
     message = client.messages.create(
-        max_tokens= 4096,
+        max_tokens= 8192,
         model= "claude-sonnet-4-6",
         system=f"""You are a professional resume writer. Customize the base resume to match the job analysis.
                 Rules:
@@ -31,4 +31,11 @@ def write(job_analysis: dict, resume: dict,feedback: str = None) ->dict: # type:
 
 
     )
-    return json.loads(message.content[0].text) # type: ignore
+    text = message.content[0].text.strip() # type: ignore
+    if text.startswith("```"):
+        text = text.split("```")[1]
+        if text.startswith("json"):
+            text = text[4:]
+    return json.loads(text.strip())
+
+    
