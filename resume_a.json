@@ -1,0 +1,52 @@
+{
+  "name": "",
+  "title": "",
+  "email": "",
+  "phone": "",
+  "linkedin": "",
+  "location": "",
+  "summary": "",
+  "skills": {
+  },
+  "experience": [
+    {
+      "title": "",
+      "company": "",
+      "client": "",
+      "project": "",
+      "location": "",
+      "start_date": "",
+      "end_date": "",
+      "bullets": [
+ 
+      ]
+    },
+  "education": [
+    {
+      "degree": "",
+      "institution": "",
+      "location": "",
+      "start_date": "",
+      "end_date": "",
+      "gpa": ""
+    }
+  ],
+  "certifications": [
+    {
+      "name": "",
+      "issuer": "",
+      "date": ""
+    },
+    {
+      "name": "",
+      "issuer": "",
+      "date": ""
+    },
+    {
+      "name": "",
+      "issuer": "",
+      "date": ""
+    }
+  ],
+  "projects": []
+}
