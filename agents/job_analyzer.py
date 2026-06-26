@@ -14,4 +14,9 @@ def analyze(job_description: str):
     max_tokens=1024,
     system="You are a job description analyzer. Extract key information and return JSON only. No extra text, no markdown, no code fences. Always return exactly these keys: job_title, required_skills, nice_to_have_skills, key_responsibilities, keywords, experience_years",
     messages=[{"role": "user", "content": job_description}])
-    return json.loads(message.content[0].text) # type: ignore
+    text = message.content[0].text.strip() # type: ignore
+    if text.startswith("```"):
+        text = text.split("```")[1]
+        if text.startswith("json"):
+            text = text[4:]
+    return json.loads(text.strip())
