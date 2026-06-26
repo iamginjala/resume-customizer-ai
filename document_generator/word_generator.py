@@ -86,7 +86,7 @@ def generate(resume: dict) -> bytes:
         add_heading("Technical Skills")
         for category, items in skills.items():
             category_label = category.replace("_", " ").title()
-            if "Platform" in category_label: category_label = "Power Platform"
+            if "Platform" in category_label: category_label = "Cloud Platform"
             elif "Alm" in category_label: category_label = "Environment & ALM Administration"
             elif "Api" in category_label: category_label = "API & Data Integration"
             
