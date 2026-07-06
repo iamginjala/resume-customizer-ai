@@ -4,3 +4,4 @@ __pycache__/
 *.pyc
 resume_pp.json
 resume_devops.json
+secrets.toml
