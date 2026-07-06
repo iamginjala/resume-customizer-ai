@@ -8,11 +8,15 @@ load_dotenv()
 
 api = os.getenv("ANTHROPIC_API_KEY")
 
-def check(resume: dict, job_analysis: dict) -> tuple[int, str]:
+_MODEL = "claude-haiku-4-5"
+_INPUT_PRICE = 1.00   # $ per 1M tokens
+_OUTPUT_PRICE = 5.00  # $ per 1M tokens
+
+def check(resume: dict, job_analysis: dict) -> tuple[int, str, dict]:
     client = anthropic.Anthropic(api_key=api)
     result = client.messages.create(
         max_tokens=1024,
-        model="claude-haiku-4-5",
+        model=_MODEL,
         system="You are a professional technical resume reviewer. Compare the job description and resume, then return JSON only with exactly two keys: score (integer 1-10) and feedback (string). No markdown, no code fences, no extra text.",
         messages=[{'role':'user','content':f'Resume: {json.dumps(resume)}\n\nJob Analysis: {json.dumps(job_analysis)}'}]
     )
@@ -30,4 +34,8 @@ def check(resume: dict, job_analysis: dict) -> tuple[int, str]:
             parsed = json.loads(match.group())
         else:
             raise
-    return (parsed["score"], parsed["feedback"])
+    input_tokens = result.usage.input_tokens
+    output_tokens = result.usage.output_tokens
+    cost = (input_tokens / 1_000_000) * _INPUT_PRICE + (output_tokens / 1_000_000) * _OUTPUT_PRICE
+    usage = {"model": _MODEL, "input_tokens": input_tokens, "output_tokens": output_tokens, "cost": cost}
+    return parsed["score"], parsed["feedback"], usage
