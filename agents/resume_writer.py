@@ -10,11 +10,15 @@ api = os.getenv("ANTHROPIC_API_KEY")
 
 
 
-def write(job_analysis: dict, resume: dict,feedback: str = None) ->dict: # type: ignore
+_MODEL = "claude-sonnet-4-6"
+_INPUT_PRICE = 3.00   # $ per 1M tokens
+_OUTPUT_PRICE = 15.00  # $ per 1M tokens
+
+def write(job_analysis: dict, resume: dict, feedback: str = None) -> tuple[dict, dict]: # type: ignore
     client = anthropic.Anthropic(api_key=api)
     message = client.messages.create(
         max_tokens= 8192,
-        model= "claude-sonnet-4-6",
+        model= _MODEL,
         system=f"""You are a professional resume writer. Customize the base resume to match the job analysis.
                 Rules:
                     - Return JSON only. No markdown, no code fences, no extra text.
@@ -36,6 +40,10 @@ def write(job_analysis: dict, resume: dict,feedback: str = None) ->dict: # type:
         text = text.split("```")[1]
         if text.startswith("json"):
             text = text[4:]
-    return json.loads(text.strip())
+    input_tokens = message.usage.input_tokens
+    output_tokens = message.usage.output_tokens
+    cost = (input_tokens / 1_000_000) * _INPUT_PRICE + (output_tokens / 1_000_000) * _OUTPUT_PRICE
+    usage = {"model": _MODEL, "input_tokens": input_tokens, "output_tokens": output_tokens, "cost": cost}
+    return json.loads(text.strip()), usage
 
     
