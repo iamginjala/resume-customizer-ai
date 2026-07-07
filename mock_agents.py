@@ -1,14 +1,14 @@
 import json
 
+_ZERO_USAGE = {"model": "mock", "input_tokens": 0, "output_tokens": 0, "cost": 0.0}
+
 class MockJobAnalyzer:
-    def analyze(self, jd: str) -> dict:
-        # Returns a dummy analysis block instantly
-        return {"target_role": "Power Platform Developer", "keywords": ["Dataverse", "Plugins"]}
+    def analyze(self, jd: str) -> tuple[dict, dict]:
+        return {"target_role": "Power Platform Developer", "keywords": ["Dataverse", "Plugins"]}, _ZERO_USAGE
 
 class MockResumeWriter:
-    def write(self, analysis: dict, selected_resume: dict, feedback: str = None) -> dict: # type: ignore
-        # Returns the exact target data structure you want to test in your PDF layout
-        return {
+    def write(self, analysis: dict, selected_resume: dict, feedback: str = None) -> tuple[dict, dict]: # type: ignore
+        resume = {
             "name": "Harsha Vardhan Reddy Ginjala",
             "title": "Microsoft Power Platform Developer | PowerApps | Power Automate",
             "phone": "+1-605-371-6023",
@@ -47,11 +47,11 @@ class MockResumeWriter:
                 "MB-210 - Microsoft Dynamics 365 Sales Functional Consultant"
             ]
         }
+        return resume, _ZERO_USAGE
 
 class MockQualityChecker:
-    def check(self, customized_resume: dict, analysis: dict):
-        # Force a passing score of 8 so the loop breaks cleanly on the first try
-        return 8, "Looks great!"
+    def check(self, customized_resume: dict, analysis: dict) -> tuple[int, str, dict]:
+        return 8, "Looks great!", _ZERO_USAGE
 
 job_analyzer = MockJobAnalyzer()
 resume_writer = MockResumeWriter()
