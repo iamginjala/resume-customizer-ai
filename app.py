@@ -3,6 +3,12 @@ import json
 from agents import job_analyzer, quality_checker, resume_writer
 # from mock_agents import job_analyzer, quality_checker, resume_writer
 from document_generator import pdf_generator, word_generator
+import os
+
+
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))        # .../Job application assistant
+db_path = os.path.join(PROJECT_ROOT, "DATA", "resume.db")
+
 
 st.set_page_config(page_title="Resume Tailor", page_icon="📄", layout="wide")
 
@@ -15,6 +21,8 @@ if not st.user.is_logged_in:
         st.button("Log in with Google", on_click=st.login, type="primary")
     st.stop()
 
+conn = st.connection("resume_db", type="sql", url=f"sqlite:///{db_path}")
+
 # --- Sidebar: user + resume selection ---
 with st.sidebar:
     st.markdown(f"**{st.user.name}**")
@@ -23,14 +31,14 @@ with st.sidebar:
 
     st.divider()
 
-    resume_options = {
-        "Power Platform Resume": "resume_pp.json",
-        "DevOps Resume": "resume_devops.json"
-    }
-    selected = st.selectbox("Resume Template", list(resume_options.keys()))
+    names_df = conn.query("select name from resumes;")
 
-with open(resume_options[selected]) as f:
-    selected_resume = json.load(f)
+    selected = st.selectbox("Resume Template", names_df["name"])
+
+resume_df = conn.query("select resume_json from resumes where name = :name;" , params= {"name": selected},)
+
+raw_json_text = resume_df.iloc[0]["resume_json"]
+selected_resume = json.loads(raw_json_text)
 
 # --- Main content ---
 st.title("📄 Resume Tailor")
