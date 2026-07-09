@@ -10,9 +10,9 @@ api = os.getenv("ANTHROPIC_API_KEY")
 
 
 
-_MODEL = "claude-sonnet-4-6"
-_INPUT_PRICE = 3.00   # $ per 1M tokens
-_OUTPUT_PRICE = 15.00  # $ per 1M tokens
+_MODEL = "claude-sonnet-5"
+_INPUT_PRICE = 2.00   # $ per 1M tokens
+_OUTPUT_PRICE = 10.00  # $ per 1M tokens
 
 def write(job_analysis: dict, resume: dict, feedback: str = None) -> tuple[dict, dict]: # type: ignore
     client = anthropic.Anthropic(api_key=api)
